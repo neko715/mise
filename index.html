@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>商品一覧</title>
+  <style>
+    body {
+      font-family: 'ヒラギノ角ゴ Pro','メイリオ',sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 { text-align: center; color: #333; }
+    #timeInfo {
+      text-align: center;
+      margin: 10px 0 20px;
+      color: #666;
+      font-size: 0.9em;
+    }
+    #updateNotice {
+      background: #fff3f3;
+      border: 1px solid #f5c2c2;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #updateNotice p {
+      margin: 0 0 10px;
+      font-size: 1.1em;
+      color: #c00;
+    }
+    #updateNotice button {
+      background: #c00;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .product-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .product {
+      background: #fff;
+      width: 160px;
+      cursor: pointer;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform .1s, box-shadow .1s;
+      padding: 10px;
+    }
+    .product:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .product img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .product p {
+      margin: 6px 0;
+      color: #333;
+      font-size: 0.95em;
+    }
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+      visibility: hidden; opacity: 0; transition: visibility 0s, opacity .2s;
+    }
+    .modal-overlay.active { visibility: visible; opacity: 1; }
+    .modal {
+      background: #fff; padding: 20px; border-radius: 8px; max-width: 90%; width: 320px;
+      text-align: center;
+    }
+    .modal img {
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .modal input[type="number"] {
+      width: 60px;
+      padding: 4px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .modal button {
+      margin: 6px 4px; padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    #btnBuy    { background: #28a745; color: #fff; }
+    #btnCancel { background: #6c757d; color: #fff; }
+    #btnDone   { background: #007bff; color: #fff; }
+    #btnOk     { background: #007bff; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <h1>商品一覧</h1>
+  <p id="timeInfo"></p>
+
+  <div id="updateNotice" style="display: none;">
+    <p>品揃えが変更されました</p>
+    <button id="btnUpdate">更新</button>
+  </div>
+
+  <div id="productList" class="product-list"></div>
+
+  <!-- 購入確認モーダル -->
+  <div id="confirmModal" class="modal-overlay">
+    <div class="modal">
+      <img id="modalImage" src="" alt="" style="width:100px;">
+      <h2 id="modalName"></h2>
+      <p id="modalPrice"></p>
+      <!-- 数量指定 -->
+      <div>
+        <label>数量: 
+          <input id="qtyInput" type="number" min="1" value="1">
+        </label>
+      </div>
+      <button id="btnBuy">購入する</button>
+      <button id="btnCancel">購入しない</button>
+    </div>
+  </div>
+
+  <!-- 支払い指示モーダル -->
+  <div id="payModal" class="modal-overlay">
+    <div class="modal">
+      <p>代金をBOXに入れてください</p>
+      <button id="btnDone">完了</button>
+    </div>
+  </div>
+
+  <!-- 完了メッセージモーダル -->
+  <div id="thanksModal" class="modal-overlay">
+    <div class="modal">
+      <p>ご購入ありがとうございました！</p>
+      <button id="btnOk">OK</button>
+    </div>
+  </div>
+
+  <script>
+    // 時間表示（手動指定）
+    const timestampText = "22:50"; // ← ここを書き換えて設定
+    document.getElementById('timeInfo').textContent =
+      `商品の品揃え状況は ${timestampText} の時点です`;
+
+    // 定数
+    const LOCAL_VERSION     = 1;
+    const SHEET_CSV_URL     = 'https://docs.google.com/spreadsheets/d/1uk_vK01EW2DIyxrFPN8_FIOvw24woG7nt-O8h2pgm94/export?format=csv&gid=0';
+    const STORAGE_KEY_VER   = 'productVersion';
+    const STORAGE_KEY_QTY   = 'purchasedQty';
+    const CHECK_INTERVAL_MS = 1000;
+
+    // 要素取得
+    const updateNoticeEl = document.getElementById('updateNotice');
+    const btnUpdate      = document.getElementById('btnUpdate');
+    const listEl         = document.getElementById('productList');
+    let purchasedQty     = JSON.parse(localStorage.getItem(STORAGE_KEY_QTY) || '{}');
+    let versionNotified  = false;
+
+    // 在庫設定
+    const products = [
+      { id: 1, name: 'おやつラーメン1袋',         price: 50, image: 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp', stock: 13 },
+      { id: 2, name: 'かたぶつ',                   price: 300, image: 'https://m.media-amazon.com/images/I/61lSRy3ohZL._UF894,1000_QL80_.jpg', stock: 1 },
+      { id: 3, name: 'スコーン 絶品焼きとうもろこし味', price: 200, image: 'https://m.media-amazon.com/images/I/51tHmy+GiyL.jpg', stock: 1 },
+      { id: 4, name: 'ポテトチップス ガーリック味',   price: 150, image: 'https://m.media-amazon.com/images/I/61u0kA3KhzL.jpg', stock: 1 },
+      { id: 5, name: 'ポテトチップス 金のコンソメ味', price: 150, image: 'https://m.media-amazon.com/images/I/51zDli4Mb9L._AC_.jpg', stock: 1 },
+    ].slice(0, 10);
+
+    // バージョンチェック
+    function checkVersion() {
+      fetch(SHEET_CSV_URL)
+        .then(res => res.text())
+        .then(csv => {
+          const remoteVer = parseInt(csv.trim().split('\n')[0], 10);
+          const currentVer = localStorage.getItem(STORAGE_KEY_VER);
+          if (remoteVer && remoteVer !== Number(currentVer) && !versionNotified) {
+            versionNotified = true;
+            localStorage.setItem(STORAGE_KEY_VER, remoteVer);
+            localStorage.removeItem(STORAGE_KEY_QTY);
+            purchasedQty = {};
+            listEl.style.display = 'none';
+            updateNoticeEl.style.display = 'block';
+          }
+        })
+        .catch(() => {});
+    }
+    checkVersion();
+    setInterval(checkVersion, CHECK_INTERVAL_MS);
+    btnUpdate.addEventListener('click', () => location.reload());
+
+    // 描画＆購入フロー
+    function renderProducts() {
+      listEl.innerHTML = '';
+      products.forEach(p => {
+        const bought = purchasedQty[p.id] || 0;
+        const remain = p.stock - bought;
+        if (remain <= 0) return;
+        const box = document.createElement('div');
+        box.className = 'product';
+        box.dataset.id = p.id;
+        box.dataset.remain = remain;
+        box.innerHTML = `
+          <img src="${p.image}" alt="${p.name}">
+          <p>${p.name}</p>
+          <p>￥${p.price}</p>
+          <p>残り ${remain} 個</p>
+        `;
+        listEl.appendChild(box);
+      });
+
+      let selProd = null;
+      const confirmModal = document.getElementById('confirmModal');
+      const payModal     = document.getElementById('payModal');
+      const thanksModal  = document.getElementById('thanksModal');
+      const modalImage   = document.getElementById('modalImage');
+      const modalName    = document.getElementById('modalName');
+      const modalPrice   = document.getElementById('modalPrice');
+      const qtyInput     = document.getElementById('qtyInput');
+      const btnBuy       = document.getElementById('btnBuy');
+      const btnCancel    = document.getElementById('btnCancel');
+      const btnDone      = document.getElementById('btnDone');
+      const btnOk        = document.getElementById('btnOk');
+
+      // 数量変更に応じて価格更新
+      function updateModalPrice() {
+        const qty = Math.max(1, Math.min(qtyInput.max, Number(qtyInput.value)));
+        modalPrice.textContent = `￥${selProd.price * qty}`;
+      }
+      qtyInput.addEventListener('input', updateModalPrice);
+
+      // 商品クリックでモーダル表示
+      listEl.addEventListener('click', e => {
+        const item = e.target.closest('.product');
+        if (!item) return;
+        const id     = +item.dataset.id;
+        const remain = +item.dataset.remain;
+        selProd = products.find(x => x.id === id);
+        modalImage.src        = selProd.image;
+        modalName.textContent = selProd.name;
+        qtyInput.max          = remain;
+        qtyInput.value        = 1;
+        updateModalPrice();
+        confirmModal.classList.add('active');
+      });
+
+      btnCancel.addEventListener('click', () => confirmModal.classList.remove('active'));
+      btnBuy   .addEventListener('click', () => {
+        confirmModal.classList.remove('active');
+        payModal.classList.add('active');
+      });
+      btnDone  .addEventListener('click', () => {
+        payModal.classList.remove('active');
+        thanksModal.classList.add('active');
+      });
+
+      // OKボタンのイベントは上書き方式にして、複数登録による重複実行を防止
+      btnOk.onclick = () => {
+        thanksModal.classList.remove('active');
+        const q = Math.min(Number(qtyInput.value), selProd.stock - (purchasedQty[selProd.id]||0));
+        purchasedQty[selProd.id] = (purchasedQty[selProd.id]||0) + q;
+        localStorage.setItem(STORAGE_KEY_QTY, JSON.stringify(purchasedQty));
+        renderProducts();
+      };
+    }
+
+    renderProducts();
+  </script>
+</body>
+</html>
