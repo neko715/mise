@@ -2,6 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <!-- スマホ対応のためのViewport設定を追加 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>商品一覧</title>
   <style>
     body {
@@ -99,6 +101,21 @@
     #btnCancel { background: #6c757d; color: #fff; }
     #btnDone   { background: #007bff; color: #fff; }
     #btnOk     { background: #007bff; color: #fff; }
+
+    /* レスポンシブ対応 */
+    @media (max-width: 768px) {
+      .product-list {
+        gap: 10px;
+      }
+      .product {
+        width: calc(50% - 10px);
+      }
+    }
+    @media (max-width: 480px) {
+      .product {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
