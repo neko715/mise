@@ -165,12 +165,20 @@
 
   <script>
     // 時間表示（手動指定）
-    const timestampText = "22:50"; // ← ここを書き換えて設定
+    const timestampText = "7/18 17:00"; // ← ここを書き換えて設定
     document.getElementById('timeInfo').textContent =
       `商品の品揃え状況は ${timestampText} の時点です`;
 
     // 定数
-    const LOCAL_VERSION     = 1;
+
+
+
+    
+    const LOCAL_VERSION     = 2;
+
+
+
+    
     const SHEET_CSV_URL     = 'https://docs.google.com/spreadsheets/d/1uk_vK01EW2DIyxrFPN8_FIOvw24woG7nt-O8h2pgm94/export?format=csv&gid=0';
     const STORAGE_KEY_VER   = 'productVersion';
     const STORAGE_KEY_QTY   = 'purchasedQty';
@@ -185,7 +193,7 @@
 
     // 在庫設定
     const products = [
-      { id: 1, name: 'おやつラーメン1袋',         price: 50, image: 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp', stock: 13 },
+      { id: 1, name: 'おやつラーメン1袋',         price: 50, image: 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp', stock: 11 },
       { id: 2, name: 'かたぶつ',                   price: 300, image: 'https://m.media-amazon.com/images/I/61lSRy3ohZL._UF894,1000_QL80_.jpg', stock: 1 },
       { id: 3, name: 'スコーン 絶品焼きとうもろこし味', price: 200, image: 'https://m.media-amazon.com/images/I/51tHmy+GiyL.jpg', stock: 1 },
       { id: 4, name: 'ポテトチップス ガーリック味',   price: 150, image: 'https://m.media-amazon.com/images/I/61u0kA3KhzL.jpg', stock: 1 },
