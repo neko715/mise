@@ -183,7 +183,7 @@
 
 
     // 店長おすすめにする商品のIDをここで指定
-    const RECOMMEND_IDS = [5];
+    const RECOMMEND_IDS = [3, 5];
 
 
 
@@ -191,7 +191,7 @@
 
 
     // 時間表示（手動指定）
-    const timestampText = "7/20 16:30"; // ← ここを書き換えて設定
+    const timestampText = "7/22 20:00"; // ← ここを書き換えて設定
     document.getElementById('timeInfo').textContent =
       `商品の品揃え状況は ${timestampText} の時点です`;
 
@@ -200,7 +200,7 @@
 
     
     // 定数
-    const LOCAL_VERSION     = 8;
+    const LOCAL_VERSION     = 9;
 
 
 
@@ -220,10 +220,10 @@
 
     // 在庫設定
     const products = [
-      { id: 1, name: 'おやつラーメン1袋',         price: 50, image: 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp', stock: 4 },
-      //{ id: 2, name: 'かたぶつ',                   price: 300, image: 'https://m.media-amazon.com/images/I/61lSRy3ohZL._UF894,1000_QL80_.jpg', stock: 1 },
-      //{ id: 3, name: 'スコーン 絶品焼きとうもろこし味', price: 200, image: 'https://m.media-amazon.com/images/I/51tHmy+GiyL.jpg', stock: 1 },
-      //{ id: 4, name: 'ポテトチップス ガーリック味',   price: 150, image: 'https://m.media-amazon.com/images/I/61u0kA3KhzL.jpg', stock: 1 },
+      { id: 1, name: 'おやつラーメン1袋',price: 50, image: 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp', stock: 4 },
+      { id: 2, name: '贅沢厚切りポテト サワークリームオニオン' ,price: 130, image: 'https://img-afd.7api-01.dp1.sej.co.jp/item-image/330370/024B89A8ACFC260CBA3EB1ECEEC5DF82.jpg', stock: 1 },
+      { id: 3, name: 'キャベツ太郎', price: 150, image: 'https://www.yaokin.com/dcms_media/image/02116_01.png', stock: 1 },
+      { id: 4, name: 'サクサクコーン　濃厚チーズ味',   price: 180, image: 'https://7premium.jp/files/item/2021_guidelines/4903015580405_k.jpg', stock: 1 },
       { id: 5, name: 'ポテトチップス 金のコンソメ味', price: 150, image: 'https://m.media-amazon.com/images/I/51zDli4Mb9L._AC_.jpg', stock: 1 },
     ].slice(0, 10);
 
