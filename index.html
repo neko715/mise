@@ -220,31 +220,32 @@
 
     // 在庫設定
     const products = [
-      { id: 1, name: 'おやつラーメン1袋',price: 50, image: 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp', stock: 4 },
-      //{ id: 2, name: '贅沢厚切りポテト サワークリームオニオン' ,price: 130, image: 'https://img-afd.7api-01.dp1.sej.co.jp/item-image/330370/024B89A8ACFC260CBA3EB1ECEEC5DF82.jpg', stock: 1 },
-      //{ id: 3, name: 'キャベツ太郎', price: 150, image: 'https://www.yaokin.com/dcms_media/image/02116_01.png', stock: 1 },
-      //{ id: 4, name: 'サクサクコーン　濃厚チーズ味',   price: 180, image: 'https://7premium.jp/files/item/2021_guidelines/4903015580405_k.jpg', stock: 1 },
+      { id: 1, name: 'おやつラーメン1袋',price: 50, image: 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp', stock: 3 },
+      { id: 2, name: 'うまい輪 めんたい味' ,price: 150, image: 'https://www.yaokin.com/dcms_media/image/03389_01.png', stock: 1 },
+      { id: 3, name: 'プリングルズ サワークリームオニオン&オニオン', price: 300, image: 'https://m.media-amazon.com/images/I/712FfnavhLL._UF894,1000_QL80_.jpg', stock: 1 },
+      { id: 4, name: 'ベビースタードデカイラーメン',   price: 180, image: 'https://m.media-amazon.com/images/I/81-llXjuSKL._UF1000,1000_QL80_.jpg', stock: 1 },
       { id: 5, name: 'ポテトチップス 金のコンソメ味', price: 150, image: 'https://m.media-amazon.com/images/I/51zDli4Mb9L._AC_.jpg', stock: 1 },
+      { id: 6, name: 'ファンタオレンジ', price: 150, image: 'https://m.media-amazon.com/images/I/41lcL42oOdL._UF894,1000_QL80_.jpg', stock: 1 },
+      { id: 7, name: 'コカコーラ', price: 150, image: 'https://www.coca-cola.com/content/dam/onexp/jp/ja/brands/coca-cola/phase-2/product_coca-cola_1.png', stock: 1 },
     ].slice(0, 10);
 
     // バージョンチェック
-    function checkVersion() {
-      fetch(SHEET_CSV_URL)
-        .then(res => res.text())
-        .then(csv => {
-          const remoteVer = parseInt(csv.trim().split('\n')[0], 10);
-          const currentVer = localStorage.getItem(STORAGE_KEY_VER);
-          if (remoteVer && remoteVer !== Number(currentVer) && !versionNotified) {
-            versionNotified = true;
-            localStorage.setItem(STORAGE_KEY_VER, remoteVer);
-            localStorage.removeItem(STORAGE_KEY_QTY);
-            purchasedQty = {};
-            listEl.style.display = 'none';
-            updateNoticeEl.style.display = 'block';
-          }
-        })
-        .catch(() => {});
-    }
+function checkVersion() {
+  fetch(SHEET_CSV_URL)
+    .then(res => res.text())
+    .then(csv => {
+      const remoteVer = parseInt(csv.trim().split('\n')[0], 10);
+      const currentVer = localStorage.getItem(STORAGE_KEY_VER);
+      if (remoteVer && remoteVer !== Number(currentVer) && !versionNotified) {
+        versionNotified = true;
+        localStorage.setItem(STORAGE_KEY_VER, remoteVer);
+        localStorage.removeItem(STORAGE_KEY_QTY);
+        purchasedQty = {};
+        location.reload(); // ✅ 自動でページを更新
+      }
+    })
+    .catch(() => {});
+}
     checkVersion();
     setInterval(checkVersion, CHECK_INTERVAL_MS);
     btnUpdate.addEventListener('click', () => location.reload());
