@@ -191,7 +191,7 @@
 
 
     // 時間表示（手動指定）
-    const timestampText = "7/27 19:00"; // ← ここを書き換えて設定
+    const timestampText = "8/2 12:00"; // ← ここを書き換えて設定
     document.getElementById('timeInfo').textContent =
       `商品の品揃え状況は ${timestampText} の時点です`;
 
@@ -200,7 +200,7 @@
 
     
     // 定数
-    const LOCAL_VERSION     = 12;
+    const LOCAL_VERSION     = 13;
 
 
 
@@ -220,13 +220,13 @@
 
     // 在庫設定
     const products = [
-      { id: 1, name: 'おやつラーメン1袋',price: 50, image: 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp', stock: 3 },
-      { id: 2, name: 'うまい輪 めんたい味' ,price: 150, image: 'https://www.yaokin.com/dcms_media/image/03389_01.png', stock: 1 },
-      { id: 3, name: 'プリングルズ サワークリームオニオン&オニオン', price: 300, image: 'https://m.media-amazon.com/images/I/712FfnavhLL._UF894,1000_QL80_.jpg', stock: 1 },
+      { id: 1, name: 'おやつラーメン1袋',price: 50, image: 'https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp', stock: 2 },
+      //{ id: 2, name: 'うまい輪 めんたい味' ,price: 150, image: 'https://www.yaokin.com/dcms_media/image/03389_01.png', stock: 1 },
+      //{ id: 3, name: 'プリングルズ サワークリームオニオン&オニオン', price: 300, image: 'https://m.media-amazon.com/images/I/712FfnavhLL._UF894,1000_QL80_.jpg', stock: 1 },
       { id: 4, name: 'ベビースタードデカイラーメン',   price: 180, image: 'https://m.media-amazon.com/images/I/81-llXjuSKL._UF1000,1000_QL80_.jpg', stock: 1 },
-      { id: 5, name: 'ポテトチップス 金のコンソメ味', price: 150, image: 'https://m.media-amazon.com/images/I/51zDli4Mb9L._AC_.jpg', stock: 1 },
-      { id: 6, name: 'ファンタオレンジ', price: 150, image: 'https://m.media-amazon.com/images/I/41lcL42oOdL._UF894,1000_QL80_.jpg', stock: 1 },
-      { id: 7, name: 'コカコーラ', price: 150, image: 'https://www.coca-cola.com/content/dam/onexp/jp/ja/brands/coca-cola/phase-2/product_coca-cola_1.png', stock: 1 },
+      //{ id: 5, name: 'ポテトチップス 金のコンソメ味', price: 150, image: 'https://m.media-amazon.com/images/I/51zDli4Mb9L._AC_.jpg', stock: 1 },
+      //{ id: 6, name: 'ファンタオレンジ', price: 150, image: 'https://m.media-amazon.com/images/I/41lcL42oOdL._UF894,1000_QL80_.jpg', stock: 1 },
+      //{ id: 7, name: 'コカコーラ', price: 150, image: 'https://www.coca-cola.com/content/dam/onexp/jp/ja/brands/coca-cola/phase-2/product_coca-cola_1.png', stock: 1 },
     ].slice(0, 10);
 
     // バージョンチェック
