@@ -183,7 +183,7 @@
 
 
     // 店長おすすめにする商品のIDをここで指定
-    const RECOMMEND_IDS = [1, 4];
+    const RECOMMEND_IDS = [2, 3];
 
 
 
@@ -191,7 +191,7 @@
 
 
     // 時間表示（手動指定）
-    const timestampText = "8/2 22:52"; // ← ここを書き換えて設定
+    const timestampText = "8/5 16:28"; // ← ここを書き換えて設定
     document.getElementById('timeInfo').textContent =
       `商品の品揃え状況は ${timestampText} の時点です`;
 
@@ -200,7 +200,7 @@
 
     
     // 定数
-    const LOCAL_VERSION = 15;
+    const LOCAL_VERSION = 16;
 
 
 
@@ -228,11 +228,25 @@
     "stock": 2
   },
   {
+    "id": 2,
+    "name": "あみじゃが ごまラー油味",
+    "price": 160,
+    "stock": 1,
+    "image": "https://www.tohato.jp/news/img/news_page_img/250804_AMIJ_01_a.jpg"
+  },
+  {
+    "id": 3,
+    "name": "硬ぶつ 黒胡椒",
+    "price": 350,
+    "stock": 1,
+    "image": "https://www.kamedaseika.co.jp/wp-content/uploads/2025/06/254103_610_610.jpg"
+  },
+  {
     "id": 4,
-    "name": "ベビースタードデカイラーメン",
-    "price": 150,
-    "image": "https://m.media-amazon.com/images/I/81-llXjuSKL._UF1000,1000_QL80_.jpg",
-    "stock": 1
+    "name": "チーズカカールアーモンド",
+    "price": 270,
+    "stock": 1,
+    "image": "https://m.media-amazon.com/images/I/51m2hImbuoL._UF894,1000_QL80_.jpg"
   }
 ].slice(0, 10);
 
