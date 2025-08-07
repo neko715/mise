@@ -1,195 +1,240 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <!-- スマホ対応のためのViewport設定を追加 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>商品一覧</title>
-  <style>
-    body {
-      font-family: 'ヒラギノ角ゴ Pro','メイリオ',sans-serif;
-      background: #f7f7f7;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 { text-align: center; color: #333; }
-    #timeInfo {
-      text-align: center;
-      margin: 10px 0 20px;
-      color: #666;
-      font-size: 0.9em;
-    }
-    #updateNotice {
-      background: #fff3f3;
-      border: 1px solid #f5c2c2;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    #updateNotice p {
-      margin: 0 0 10px;
-      font-size: 1.1em;
-      color: #c00;
-    }
-    #updateNotice button {
-      background: #c00;
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .product-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-    .product {
-      position: relative; /* 追加：バッジ表示のため */
-      background: #fff;
-      width: 160px;
-      cursor: pointer;
-      text-align: center;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: transform .1s, box-shadow .1s;
-      padding: 10px;
-    }
-    .product:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .product img {
-      width: 100%;
-      height: auto;
-      border-radius: 4px;
-    }
-    .product p {
-      margin: 6px 0;
-      color: #333;
-      font-size: 0.95em;
-    }
-    /* 店長おすすめバッジ */
-    .badge {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: gold;
-      color: #333;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.8em;
-      font-weight: bold;
-    }
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
-      visibility: hidden; opacity: 0; transition: visibility 0s, opacity .2s;
-    }
-    .modal-overlay.active { visibility: visible; opacity: 1; }
-    .modal {
-      background: #fff; padding: 20px; border-radius: 8px; max-width: 90%; width: 320px;
-      text-align: center;
-    }
-    .modal img {
-      border-radius: 4px;
-      margin-bottom: 10px;
-    }
-    .modal input[type="number"] {
-      width: 60px;
-      padding: 4px;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    .modal button {
-      margin: 6px 4px; padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.9em;
-    }
-    #btnBuy    { background: #28a745; color: #fff; }
-    #btnCancel { background: #6c757d; color: #fff; }
-    #btnDone   { background: #007bff; color: #fff; }
-    #btnOk     { background: #007bff; color: #fff; }
 
-    /* レスポンシブ対応 */
-    @media (max-width: 768px) {
-      .product-list {
-        gap: 10px;
-      }
-      .product {
-        width: calc(50% - 10px);
-      }
-    }
-    @media (max-width: 480px) {
-      .product {
-        width: 100%;
-      }
-    }
-  </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品一覧</title>
+    <style>
+        /* 既存のCSSは省略せずすべて維持（略） */
+        body {
+            font-family: 'ヒラギノ角ゴ Pro', 'メイリオ', sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #timeInfo {
+            text-align: center;
+            margin: 10px 0 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        #updateNotice {
+            background: #fff3f3;
+            border: 1px solid #f5c2c2;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #updateNotice p {
+            margin: 0 0 10px;
+            font-size: 1.1em;
+            color: #c00;
+        }
+
+        #updateNotice button {
+            background: #c00;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .product {
+            position: relative;
+            background: #fff;
+            width: 160px;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: transform .1s, box-shadow .1s;
+            padding: 10px;
+        }
+
+        .product:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .product img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .product p {
+            margin: 6px 0;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: gold;
+            color: #333;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity .2s;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 90%;
+            width: 320px;
+            text-align: center;
+        }
+
+        .modal img {
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .modal input[type="number"] {
+            width: 60px;
+            padding: 4px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .modal button {
+            margin: 6px 4px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        #btnBuy {
+            background: #28a745;
+            color: #fff;
+        }
+
+        #btnCancel {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        #btnDone {
+            background: #007bff;
+            color: #fff;
+        }
+
+        #btnOk {
+            background: #007bff;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .product-list {
+                gap: 10px;
+            }
+
+            .product {
+                width: calc(50% - 10px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-  <h1>商品一覧</h1>
-  <p id="timeInfo"></p>
+    <h1>商品一覧</h1>
+    <p id="timeInfo"></p>
 
-  <div id="updateNotice" style="display: none;">
-    <p>未同期の要素あります</p>
-    <button id="btnUpdate">同期</button>
-  </div>
-
-  <div id="productList" class="product-list"></div>
-
-  <!-- 購入確認モーダル -->
-  <div id="confirmModal" class="modal-overlay">
-    <div class="modal">
-      <img id="modalImage" src="" alt="" style="width:100px;">
-      <h2 id="modalName"></h2>
-      <p id="modalPrice"></p>
-      <!-- 数量指定 -->
-      <div>
-        <label>数量: 
-          <input id="qtyInput" type="number" min="1" value="1">
-        </label>
-      </div>
-      <button id="btnBuy">購入する</button>
-      <button id="btnCancel">購入しない</button>
+    <div id="updateNotice" style="display: none;">
+        <p>未同期の要素あります</p>
+        <button id="btnUpdate">同期</button>
     </div>
-  </div>
 
-  <!-- 支払い指示モーダル -->
-  <div id="payModal" class="modal-overlay">
-    <div class="modal">
-      <p>代金をBOXに入れてください</p>
-      <button id="btnDone">完了</button>
+    <div id="productList" class="product-list"></div>
+
+    <!-- 購入確認モーダル -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal">
+            <img id="modalImage" src="" alt="" style="width:100px;">
+            <h2 id="modalName"></h2>
+            <p id="modalPrice"></p>
+            <div>
+                <label>数量:
+                    <input id="qtyInput" type="number" min="1" value="1">
+                </label>
+            </div>
+            <button id="btnBuy">購入する</button>
+            <button id="btnCancel">購入しない</button>
+        </div>
     </div>
-  </div>
 
-  <!-- 完了メッセージモーダル -->
-  <div id="thanksModal" class="modal-overlay">
-    <div class="modal">
-      <p>ご購入ありがとうございました！</p>
-      <button id="btnOk">OK</button>
+    <!-- 支払い指示モーダル -->
+    <div id="payModal" class="modal-overlay">
+        <div class="modal">
+            <p>代金をBOXに入れてください</p>
+            <button id="btnDone">完了</button>
+        </div>
     </div>
-  </div>
 
-  <script>
-    // ====== ① Web API のエンドポイント URL を設定 ======
-    const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx0iVTFjS35Mimv7QWEIxSTN4Z9G7PrKXqwkDlTpphrR_urwTnJfJIlCqxE4oF08D-P/exec';
+    <!-- 完了メッセージモーダル -->
+    <div id="thanksModal" class="modal-overlay">
+        <div class="modal">
+            <p>ご購入ありがとうございました！</p>
+            <button id="btnOk">OK</button>
+        </div>
+    </div>
 
+    <!-- ✅ レジ音の追加 -->
+    <audio id="soundRegister" src="レジ.mp3" preload="auto"></audio>
 
-
-
-
-
-
-
-    
-    // ====== 既存の設定・初期化 ======
-    const RECOMMEND_IDS = [2, 3];
+    <script>
+        const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx0iVTFjS35Mimv7QWEIxSTN4Z9G7PrKXqwkDlTpphrR_urwTnJfJIlCqxE4oF08D-P/exec';
 
 
 
@@ -197,12 +242,8 @@
 
 
 
-
-    
-    // 時間表示（手動指定）
-    const timestampText = "8/5 16:28";
-    document.getElementById('timeInfo').textContent =
-      `商品の品揃え状況は ${timestampText} の時点です`;
+      
+        const RECOMMEND_IDS = [2, 3];
 
 
 
@@ -210,181 +251,186 @@
 
 
 
-
-    
-    const LOCAL_VERSION = 17;
-
-
+      
+        const timestampText = "8/5 16:28";
+        document.getElementById('timeInfo').textContent = `商品の品揃え状況は ${timestampText} の時点です`;
 
 
 
 
 
-    
-    const SHEET_CSV_URL     = 'https://docs.google.com/spreadsheets/d/1uk_vK01EW2DIyxrFPN8_FIOvw24woG7nt-O8h2pgm94/export?format=csv&gid=0';
-    const STORAGE_KEY_VER   = 'productVersion';
-    const STORAGE_KEY_QTY   = 'purchasedQty';
-    const CHECK_INTERVAL_MS = 1000;
 
-    const updateNoticeEl = document.getElementById('updateNotice');
-    const btnUpdate      = document.getElementById('btnUpdate');
-    const listEl         = document.getElementById('productList');
-    let purchasedQty     = JSON.parse(localStorage.getItem(STORAGE_KEY_QTY) || '{}');
-    let versionNotified  = false;
 
-    const products = [
-      {
-        "id": 1,
-        "name": "おやつラーメン1袋",
-        "price": 50,
-        "image": "https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp",
-        "stock": 2
-      },
-      {
-        "id": 2,
-        "name": "あみじゃが ごまラー油味",
-        "price": 160,
-        "stock": 1,
-        "image": "https://www.tohato.jp/news/img/news_page_img/250804_AMIJ_01_a.jpg"
-      },
-      {
-        "id": 3,
-        "name": "硬ぶつ 黒胡椒",
-        "price": 350,
-        "stock": 1,
-        "image": "https://www.kamedaseika.co.jp/wp-content/uploads/2025/06/254103_610_610.jpg"
-      },
-      {
-        "id": 4,
-        "name": "チーズカカールアーモンド",
-        "price": 270,
-        "stock": 1,
-        "image": "https://m.media-amazon.com/images/I/51m2hImbuoL._UF894,1000_QL80_.jpg"
-      }
-    ].slice(0, 10);
+      
+        const LOCAL_VERSION = 18;
 
-    // バージョンチェック
-    function checkVersion() {
-      fetch(SHEET_CSV_URL)
-        .then(res => res.text())
-        .then(csv => {
-          const remoteVer = parseInt(csv.trim().split('\n')[0], 10);
-          const currentVer = localStorage.getItem(STORAGE_KEY_VER);
-          if (remoteVer && remoteVer !== Number(currentVer) && !versionNotified) {
-            versionNotified = true;
-            localStorage.setItem(STORAGE_KEY_VER, remoteVer);
-            localStorage.removeItem(STORAGE_KEY_QTY);
-            purchasedQty = {};
-            location.reload();
-          }
-        })
-        .catch(() => {});
-    }
-    checkVersion();
-    setInterval(checkVersion, CHECK_INTERVAL_MS);
-    btnUpdate.addEventListener('click', () => location.reload());
 
-    // 売上更新用の関数
-    async function updateSales(id, revenue) {
-      try {
-        const params = new URLSearchParams();
-        params.append('id', id);
-        params.append('revenue', revenue);
-        const res = await fetch(APPS_SCRIPT_WEBAPP_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: params.toString()
-        });
-        const result = await res.json();
-        if (!result.success) {
-          console.error('売上更新に失敗:', result.error);
+
+
+
+
+
+      
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1uk_vK01EW2DIyxrFPN8_FIOvw24woG7nt-O8h2pgm94/export?format=csv&gid=0';
+        const STORAGE_KEY_VER = 'productVersion';
+        const STORAGE_KEY_QTY = 'purchasedQty';
+        const CHECK_INTERVAL_MS = 1000;
+
+        const updateNoticeEl = document.getElementById('updateNotice');
+        const btnUpdate = document.getElementById('btnUpdate');
+        const listEl = document.getElementById('productList');
+        let purchasedQty = JSON.parse(localStorage.getItem(STORAGE_KEY_QTY) || '{}');
+        let versionNotified = false;
+
+        const products = [
+            {
+                "id": 1,
+                "name": "おやつラーメン1袋",
+                "price": 50,
+                "image": "https://greenbeans.com/images-v3/89edeb69-fe10-49ca-baab-5c51900239b9/469a502a-a09c-4155-a255-18e14778f53f/1280x1280.webp",
+                "stock": 2
+            },
+            {
+                "id": 2,
+                "name": "あみじゃが ごまラー油味",
+                "price": 160,
+                "stock": 1,
+                "image": "https://www.tohato.jp/news/img/news_page_img/250804_AMIJ_01_a.jpg"
+            },
+            {
+                "id": 3,
+                "name": "硬ぶつ 黒胡椒",
+                "price": 350,
+                "stock": 1,
+                "image": "https://www.kamedaseika.co.jp/wp-content/uploads/2025/06/254103_610_610.jpg"
+            },
+            {
+                "id": 4,
+                "name": "チーズカカールアーモンド",
+                "price": 270,
+                "stock": 1,
+                "image": "https://m.media-amazon.com/images/I/51m2hImbuoL._UF894,1000_QL80_.jpg"
+            }
+        ].slice(0, 10);
+
+        function checkVersion() {
+            fetch(SHEET_CSV_URL)
+                .then(res => res.text())
+                .then(csv => {
+                    const remoteVer = parseInt(csv.trim().split('\n')[0], 10);
+                    const currentVer = localStorage.getItem(STORAGE_KEY_VER);
+                    if (remoteVer && remoteVer !== Number(currentVer) && !versionNotified) {
+                        versionNotified = true;
+                        localStorage.setItem(STORAGE_KEY_VER, remoteVer);
+                        localStorage.removeItem(STORAGE_KEY_QTY);
+                        purchasedQty = {};
+                        location.reload();
+                    }
+                })
+                .catch(() => { });
         }
-      } catch (e) {
-        console.error('売上更新エラー:', e);
-      }
-    }
+        checkVersion();
+        setInterval(checkVersion, CHECK_INTERVAL_MS);
+        btnUpdate.addEventListener('click', () => location.reload());
 
-    // 商品レンダリング＆購入フロー
-    function renderProducts() {
-      listEl.innerHTML = '';
-      products.forEach(p => {
-        const bought = purchasedQty[p.id] || 0;
-        const remain = p.stock - bought;
-        if (remain <= 0) return;
-        const box = document.createElement('div');
-        box.className = 'product';
-        box.dataset.id = p.id;
-        box.dataset.remain = remain;
+        async function updateSales(id, revenue) {
+            try {
+                const params = new URLSearchParams();
+                params.append('id', id);
+                params.append('revenue', revenue);
+                const res = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
+                });
+                const result = await res.json();
+                if (!result.success) {
+                    console.error('売上更新に失敗:', result.error);
+                }
+            } catch (e) {
+                console.error('売上更新エラー:', e);
+            }
+        }
 
-        const badgeHTML = RECOMMEND_IDS.includes(p.id)
-          ? `<div class="badge">店長おすすめ</div>`
-          : '';
-
-        box.innerHTML = `
+        function renderProducts() {
+            listEl.innerHTML = '';
+            products.forEach(p => {
+                const bought = purchasedQty[p.id] || 0;
+                const remain = p.stock - bought;
+                if (remain <= 0) return;
+                const box = document.createElement('div');
+                box.className = 'product';
+                box.dataset.id = p.id;
+                box.dataset.remain = remain;
+                const badgeHTML = RECOMMEND_IDS.includes(p.id) ? `<div class="badge">店長おすすめ</div>` : '';
+                box.innerHTML = `
           ${badgeHTML}
           <img src="${p.image}" alt="${p.name}">
           <p>${p.name}</p>
           <p>￥${p.price}</p>
           <p>残り ${remain} 個</p>
         `;
-        listEl.appendChild(box);
-      });
+                listEl.appendChild(box);
+            });
 
-      let selProd = null;
-      const confirmModal = document.getElementById('confirmModal');
-      const payModal     = document.getElementById('payModal');
-      const thanksModal  = document.getElementById('thanksModal');
-      const modalImage   = document.getElementById('modalImage');
-      const modalName    = document.getElementById('modalName');
-      const modalPrice   = document.getElementById('modalPrice');
-      const qtyInput     = document.getElementById('qtyInput');
-      const btnBuy       = document.getElementById('btnBuy');
-      const btnCancel    = document.getElementById('btnCancel');
-      const btnDone      = document.getElementById('btnDone');
-      const btnOk        = document.getElementById('btnOk');
+            let selProd = null;
+            const confirmModal = document.getElementById('confirmModal');
+            const payModal = document.getElementById('payModal');
+            const thanksModal = document.getElementById('thanksModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalName = document.getElementById('modalName');
+            const modalPrice = document.getElementById('modalPrice');
+            const qtyInput = document.getElementById('qtyInput');
+            const btnBuy = document.getElementById('btnBuy');
+            const btnCancel = document.getElementById('btnCancel');
+            const btnDone = document.getElementById('btnDone');
+            const btnOk = document.getElementById('btnOk');
+            const soundRegister = document.getElementById('soundRegister');
 
-      function updateModalPrice() {
-        const qty = Math.max(1, Math.min(qtyInput.max, Number(qtyInput.value)));
-        modalPrice.textContent = `￥${selProd.price * qty}`;
-      }
-      qtyInput.addEventListener('input', updateModalPrice);
+            function updateModalPrice() {
+                const qty = Math.max(1, Math.min(qtyInput.max, Number(qtyInput.value)));
+                modalPrice.textContent = `￥${selProd.price * qty}`;
+            }
+            qtyInput.addEventListener('input', updateModalPrice);
 
-      listEl.addEventListener('click', e => {
-        const item = e.target.closest('.product');
-        if (!item) return;
-        const id     = +item.dataset.id;
-        const remain = +item.dataset.remain;
-        selProd = products.find(x => x.id === id);
-        modalImage.src        = selProd.image;
-        modalName.textContent = selProd.name;
-        qtyInput.max          = remain;
-        qtyInput.value        = 1;
-        updateModalPrice();
-        confirmModal.classList.add('active');
-      });
+            listEl.addEventListener('click', e => {
+                const item = e.target.closest('.product');
+                if (!item) return;
+                const id = +item.dataset.id;
+                const remain = +item.dataset.remain;
+                selProd = products.find(x => x.id === id);
+                modalImage.src = selProd.image;
+                modalName.textContent = selProd.name;
+                qtyInput.max = remain;
+                qtyInput.value = 1;
+                updateModalPrice();
+                confirmModal.classList.add('active');
+            });
 
-      btnCancel.addEventListener('click', () => confirmModal.classList.remove('active'));
-      btnBuy   .addEventListener('click', () => {
-        confirmModal.classList.remove('active');
-        payModal.classList.add('active');
-      });
-      btnDone  .addEventListener('click', () => {
-        payModal.classList.remove('active');
-        thanksModal.classList.add('active');
-      });
+            btnCancel.addEventListener('click', () => confirmModal.classList.remove('active'));
+            btnBuy.addEventListener('click', () => {
+                confirmModal.classList.remove('active');
+                payModal.classList.add('active');
+            });
+            btnDone.addEventListener('click', () => {
+                payModal.classList.remove('active');
+                thanksModal.classList.add('active');
+            });
 
-      btnOk.onclick = () => {
-        thanksModal.classList.remove('active');
-        const q = Math.min(Number(qtyInput.value), selProd.stock - (purchasedQty[selProd.id]||0));
-        const revenue = selProd.price * q;
-        purchasedQty[selProd.id] = (purchasedQty[selProd.id]||0) + q;
-        localStorage.setItem(STORAGE_KEY_QTY, JSON.stringify(purchasedQty));
-        updateSales(selProd.id, revenue);
+            btnOk.onclick = () => {
+                thanksModal.classList.remove('active');
+                const q = Math.min(Number(qtyInput.value), selProd.stock - (purchasedQty[selProd.id] || 0));
+                const revenue = selProd.price * q;
+                purchasedQty[selProd.id] = (purchasedQty[selProd.id] || 0) + q;
+                localStorage.setItem(STORAGE_KEY_QTY, JSON.stringify(purchasedQty));
+                updateSales(selProd.id, revenue);
+                soundRegister.play(); // ✅ 会計音再生
+                renderProducts();
+            };
+        }
+
         renderProducts();
-      };
-    }
-
-    renderProducts();
-  </script>
+    </script>
 </body>
+
 </html>
